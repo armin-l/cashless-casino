@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 import random
-from backend.src.logger_utils import casino_logger
-from backend.src.database import db
+from src.logger_utils import casino_logger
+from src.database import db
 
 app = FastAPI(
     title="Cashless Casino API",
