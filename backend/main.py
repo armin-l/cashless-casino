@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends
+import random
+from fastapi import FastAPI, Depends, HTTPException
 from src.logger_utils import casino_logger
 
 app = FastAPI(
@@ -6,6 +7,8 @@ app = FastAPI(
     description="API for managing users, wallets, and games in a cashless casino environment.",
     version="0.1.0"
 )
+
+SYMBOLS = ["🍒", "🍋", "🔔", "💎", "7️⃣"]
 
 @app.get('/', tags=["Health"])
 def read_root():
@@ -26,6 +29,25 @@ def get_wallet_balance(user_id: str = "user123"):
 async def deposit_funds(amount: float, method: str = "mock_card"):
     casino_logger.log_transaction(user_id="user123", amount=amount, transaction_type="deposit")
     return {"status": "processing", "amount": amount, "method": method}
+
+@app.post('/games/slots/spin', tags=["Games"])
+async def spin_slots(bet_amount: float):
+    reels = [random.choice(SYMBOLS) for _ in range(3)]
+    
+    # Simple win logic: all three match
+    is_win = reels[0] == reels[1] == reels[2]
+    multiplier = 10.0 if is_win else 0.0
+    payout = bet_amount * multiplier
+    
+    result = "win" if is_win else "loss"
+    
+    casino_logger.log_event("game_spin", {"game": "slots", "result": result, "payout": payout})
+    
+    return {
+        "result": result,
+        "payout": payout,
+        "reels": reels
+    }
 
 @app.post('/games/wheel/spin', tags=["Games"])
 async def spin_wheel():
