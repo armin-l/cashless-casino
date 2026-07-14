@@ -12,7 +12,7 @@ When performing tasks, follow these principles:
 
 ## Verification Workflow
 1.  **Implement/Modify Code**
-2.  **Run Tests**: (e.g., `pytest` for backend)
-3.  **Lint & Typecheck**: (e.g., `ruff`, `mypy`)
+2.  **Run Tests**: (e.g., `uv run pytest` for backend)
+3.  **Lint & Typecheck**: (e.g., `uv run ruff`, `uv run mypy`)
 4.  **Update Plan**: Mark items as completed in `docs/project_plan.md`.
 5.  **Commit**: Commit the changes and the plan update.
