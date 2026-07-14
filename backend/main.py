@@ -1,6 +1,7 @@
-import random
 from fastapi import FastAPI, Depends, HTTPException
-from src.logger_utils import casino_logger
+import random
+from backend.src.logger_utils import casino_logger
+from backend.src.database import db
 
 app = FastAPI(
     title="Cashless Casino API",
@@ -23,15 +24,20 @@ def get_current_user_me():
 @app.get('/wallet/balance', tags=["Wallet"])
 def get_wallet_balance(user_id: str = "user123"):
     casino_logger.log_event("balance_check", {"user_id": user_id})
-    return {"user_id": user_id, "balance": 1000.0}
+    return {"user_id": user_id, "balance": db.get_balance(user_id)}
 
 @app.post('/economy/deposit', tags=["Economy"])
 async def deposit_funds(amount: float, method: str = "mock_card"):
+    db.update_balance(user_id="user123", amount=amount)
     casino_logger.log_transaction(user_id="user123", amount=amount, transaction_type="deposit")
     return {"status": "processing", "amount": amount, "method": method}
 
 @app.post('/games/slots/spin', tags=["Games"])
 async def spin_slots(bet_amount: float):
+    user_id = "user123"
+    if db.get_balance(user_id) < bet_amount:
+        raise HTTPException(status_code=400, detail="Insufficient balance")
+
     reels = [random.choice(SYMBOLS) for _ in range(3)]
     
     # Simple win logic: all three match
@@ -39,6 +45,9 @@ async def spin_slots(bet_amount: float):
     multiplier = 10.0 if is_win else 0.0
     payout = bet_amount * multiplier
     
+    if is_win:
+        db.update_balance(user_id, payout)
+
     result = "win" if is_win else "loss"
     
     casino_logger.log_event("game_spin", {"game": "slots", "result": result, "payout": payout})
@@ -54,4 +63,5 @@ async def spin_wheel():
     casino_logger.log_event("game_spin", {"game": "wheel"})
     # Placeholder for game logic
     return {"result": "win", "multiplier": 2.0}
+
 
