@@ -40,12 +40,12 @@ All games will follow a standardized "Bet -> Result -> Payout/Loss" state machin
 ## Development Roadmap
 
 ### Phase 1: Foundation (The Core Engine)
-- [ ] Setup project repository and mono-repo structure.
-- [ ] Implement basic API for user authentication and balance management.
-- [ ] Create the simulation engine for "deposits" and "withdrawals".
+- [x] Setup project repository and mono-repo structure.
+- [x] Implement basic API for user authentication and balance management.
+- [x] Create the simulation engine for "deposits" and "withdrawals".
 
 ### Phase 2: The Games (MVP)
-- [ ] Develop **Wheel of Fortune** (easiest implementation/high visual impact).
+- [x] Develop **Wheel of Fortune** (easiest implementation/high visual impact).
 - [ ] Develop **Slots** (core casino mechanic).
 - [ ] Integration of basic betting logic into the user balance system.
 
