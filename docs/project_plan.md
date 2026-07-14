@@ -47,7 +47,7 @@ All games will follow a standardized "Bet -> Result -> Payout/Loss" state machin
 ### Phase 2: The Games (MVP)
 - [x] Develop **Wheel of Fortune** (easiest implementation/high visual impact).
 - [x] Develop **Slots** (core casino mechanic).
-- [ ] Integration of basic betting logic into the user balance system.
+- [x] Integration of basic betting logic into the user balance system.
 
 ### Phase 3: Complexity Scaling
 - [ ] Implement **Roulette** and **Card Games**.

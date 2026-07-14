@@ -33,8 +33,7 @@ async def deposit_funds(amount: float, method: str = "mock_card"):
     return {"status": "processing", "amount": amount, "method": method}
 
 @app.post('/games/slots/spin', tags=["Games"])
-async def spin_slots(bet_amount: float):
-    user_id = "user123"
+async def spin_slots(bet_amount: float, user_id: str = "user123"):
     if db.get_balance(user_id) < bet_amount:
         raise HTTPException(status_code=400, detail="Insufficient balance")
 
@@ -50,7 +49,7 @@ async def spin_slots(bet_amount: float):
 
     result = "win" if is_win else "loss"
     
-    casino_logger.log_event("game_spin", {"game": "slots", "result": result, "payout": payout})
+    casino_logger.log_event("game_spin", {"game": "slots", "result": result, "payout": payout, "user_id": user_id})
     
     return {
         "result": result,
