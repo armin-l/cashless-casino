@@ -7,6 +7,7 @@ from src.blackjack_engine import BlackjackEngine
 from src.effects_engine import EffectEngine
 from src.sound_effects import SoundEffectQueue, SoundEventType
 from src.websocket_manager import ConnectionManager
+from src.win_feed import GlobalWinFeed
 
 app = FastAPI(
     title="Cashless Casino API",
