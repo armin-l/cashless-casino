@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, HTTPException
 import random
 from src.logger_utils import casino_logger
 from src.database import db
 from src.roulette_engine import RouletteEngine
+from src.blackjack_engine import BlackjackEngine
 
 app = FastAPI(
     title="Cashless Casino API",
@@ -111,5 +112,89 @@ async def spin_roulette(
         "color": color,
         "balance": db.get_balance(user_id),
     }
+
+
+@app.post('/games/blackjack/deal', tags=["Games"])
+async def deal_blackjack(
+    bet_amount: float = 25.0,
+    user_id: str = "user123",
+):
+    if db.get_balance(user_id) < bet_amount:
+        raise HTTPException(status_code=400, detail="Insufficient balance")
+
+    engine = BlackjackEngine(num_decks=6)
+    result = engine.deal_hand(user_id, bet_amount)
+    # Deduct bet from user balance
+    db.update_balance(user_id, -bet_amount)
+
+    casino_logger.log_event(
+        "game_spin",
+        {
+            "game": "blackjack",
+            "action": "deal",
+            "user_id": user_id,
+            "bet": bet_amount,
+        },
+    )
+
+    return result
+
+
+@app.post('/games/blackjack/hit', tags=["Games"])
+async def hit_blackjack(
+    hand_id: str,
+):
+    engine = BlackjackEngine(num_decks=6)
+    # Load state from database - for now we use a simple approach
+    result = engine.hit(hand_id)
+
+    casino_logger.log_event(
+        "game_spin",
+        {
+            "game": "blackjack",
+            "action": "hit",
+            "hand_id": hand_id,
+        },
+    )
+
+    return result
+
+
+@app.post('/games/blackjack/stand', tags=["Games"])
+async def stand_blackjack(
+    hand_id: str,
+):
+    engine = BlackjackEngine(num_decks=6)
+    result = engine.stand(hand_id)
+
+    casino_logger.log_event(
+        "game_spin",
+        {
+            "game": "blackjack",
+            "action": "stand",
+            "hand_id": hand_id,
+        },
+    )
+
+    return result
+
+
+@app.post('/games/blackjack/double_down', tags=["Games"])
+async def double_down_blackjack(
+    hand_id: str,
+):
+    engine = BlackjackEngine(num_decks=6)
+    result = engine.double_down(hand_id)
+
+    casino_logger.log_event(
+        "game_spin",
+        {
+            "game": "blackjack",
+            "action": "double_down",
+            "hand_id": hand_id,
+        },
+    )
+
+    return result
 
 
