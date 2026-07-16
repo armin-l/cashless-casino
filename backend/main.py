@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 import random
 from src.logger_utils import casino_logger
 from src.database import db
+from src.roulette_engine import RouletteEngine
 
 app = FastAPI(
     title="Cashless Casino API",
@@ -62,5 +63,53 @@ async def spin_wheel():
     casino_logger.log_event("game_spin", {"game": "wheel"})
     # Placeholder for game logic
     return {"result": "win", "multiplier": 2.0}
+
+
+@app.post('/games/roulette/spin', tags=["Games"])
+async def spin_roulette(
+    bet_type: str,
+    bet_amount: float,
+    user_id: str = "user123",
+    bet_number: int | None = None,
+    bet_parameter: int | None = None,
+):
+    if db.get_balance(user_id) < bet_amount:
+        raise HTTPException(status_code=400, detail="Insufficient balance")
+
+    engine = RouletteEngine()
+    winning_number = engine.spin()
+    color = engine.get_color(winning_number)
+
+    payout_kwargs = {}
+    if bet_type == "straight":
+        payout_kwargs["bet_parameter"] = [bet_number] if bet_number is not None else []
+    elif bet_type in ("dozen", "column"):
+        payout_kwargs["bet_parameter"] = bet_parameter
+
+    payout = engine.calculate_payout(
+        bet_type, bet_amount, winning_number, **payout_kwargs
+    )
+
+    result = "win" if payout > 0 else "loss"
+
+    db.update_balance(user_id, payout)
+
+    casino_logger.log_event(
+        "game_spin",
+        {
+            "game": "roulette",
+            "result": result,
+            "payout": payout,
+            "user_id": user_id,
+        },
+    )
+
+    return {
+        "result": result,
+        "payout": payout,
+        "winning_number": winning_number,
+        "color": color,
+        "balance": db.get_balance(user_id),
+    }
 
 
