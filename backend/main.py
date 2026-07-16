@@ -256,3 +256,103 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
     finally:
         await connection_manager.disconnect(user_id, websocket)
 
+
+
+# Leaderboard endpoints
+from src.leaderboard_engine import engine as leaderboard_engine, PlayerStats
+import time
+
+@app.get('/leaderboard/{leaderboard_type}', tags=["Leaderboards"])
+async def get_leaderboard(leaderboard_type: str, limit: int = 10):
+    """Get a ranked leaderboard by type."""
+    leaderboard = leaderboard_engine.get_leaderboard(leaderboard_type, limit=limit)
+
+    return leaderboard
+
+
+@app.get('/user/stats', tags=["User"])
+async def get_user_stats(user_id: str = "user123"):
+    """Get current stats for a specific user."""
+    stats = leaderboard_engine.get_user_stats(user_id)
+    return stats
+
+
+@app.post('/economy/record_game', tags=["Economy"])
+async def record_game(
+    user_id: str,
+    game_type: str,
+    bet_amount: float,
+    payout: float,
+):
+    """Record a game result in the leaderboard tracking system."""
+    result = leaderboard_engine.record_game_result(
+        user_id=user_id,
+        game_type=game_type,
+        bet_amount=bet_amount,
+        payout=payout,
+    )
+    return {
+        "success": True,
+        "data": result,
+    }
+
+
+@app.get('/user/leaderboard', tags=["User"])
+async def get_user_leaderboard(user_id: str = "user123"):
+    """Get user's position in all leaderboards."""
+    stats = leaderboard_engine.get_user_stats(user_id)
+
+    total_lb = leaderboard_engine.get_leaderboard("total_winnings", limit=100)
+    games_lb = leaderboard_engine.get_leaderboard("games_played", limit=100)
+    biggest_lb = leaderboard_engine.get_leaderboard("biggest_win", limit=100)
+
+    return {
+        "user_id": user_id,
+        "stats": stats,
+        "rankings": {
+            "total_winnings_rank": next(
+                (entry["rank"] for entry in total_lb if entry["user_id"] == user_id), None
+            ),
+            "games_played_rank": next(
+                (entry["rank"] for entry in games_lb if entry["user_id"] == user_id), None
+            ),
+            "biggest_win_rank": next(
+                (entry["rank"] for entry in biggest_lb if entry["user_id"] == user_id), None
+            ),
+        },
+    }
+
+
+@app.post('/users/{user_id}/reset', tags=["Admin"])
+async def reset_user_progress(user_id: str):
+    """Reset a user's stats (admin function)."""
+    leaderboard_engine.player_stats.pop(user_id, None)
+    leaderboard_engine.biggest_wins.pop(user_id, None)
+
+    if user_id in leaderboard_engine.recent_wins_by_user:
+        del leaderboard_engine.recent_wins_by_user[user_id]
+
+    return {
+        "success": True,
+        "message": f"Stats for {user_id} have been reset",
+    }
+
+
+@app.get('/users', tags=["Admin"])
+async def list_all_users():
+    """List all tracked users."""
+    users = []
+    for uid, stats in leaderboard_engine.player_stats.items():
+        users.append({
+            "user_id": uid,
+            "games_played": stats.games_played,
+            "total_winnings": stats.total_winnings,
+        })
+
+    return {
+        "success": True,
+        "count": len(users),
+        "data": users,
+    }
+
+
