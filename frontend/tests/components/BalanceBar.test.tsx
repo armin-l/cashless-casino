@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import BalanceBar from '../src/components/BalanceBar';
+import BalanceBar from '../src/components/BalanceBar.tsx';
 
 describe('BalanceBar', () => {
   it('renders balance correctly', async () => {
