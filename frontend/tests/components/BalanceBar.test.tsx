@@ -1,44 +1,53 @@
+import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import BalanceBar from '../src/components/BalanceBar.tsx';
+import BalanceBar from '@/components/BalanceBar';
 
 describe('BalanceBar', () => {
-  it('renders balance correctly', async () => {
-    const balance = 1500;
-    render(<BalanceBar balance={balance} />);
-    expect(screen.getByText(new RegExp(String(balance), 'i'))).toBeInTheDocument();
+  const mockFetch = jest.fn();
+  
+  beforeEach(() => {
+    global.fetch = mockFetch;
   });
 
-  it('shows $ prefix on balance amount', async () => {
-    render(<BalanceBar balance={420} />);
-    // The dollar sign appears before the number
-    const text = screen.queryByText(/\$|balance/i);
-    expect(text).toBeTruthy();
+  afterEach(() => {
+    (global.fetch as jest.Mock).mockClear();
   });
 
-  it('shows deposit button with click handler', async () => {
-    const onClick = jest.fn();
-    render(<BalanceBar balance={500} onDeposit={onClick} />);
-    const btn = screen.getByRole('button', { name: /deposit/i });
-    if (btn) fireEvent.click(btn);
+  it('renders VC label and balance display', async () => {
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ user_id: 'user123', balance: 500 }) });
+    
+    render(<BalanceBar />);
+    
+    expect(screen.getByText('VC')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('balance-display')).toHaveTextContent(/500/);
+    });
   });
 
-  it('handles deposit button click event', async () => {
-    const onClick = jest.fn();
-    render(<BalanceBar balance={500} onDeposit={onClick} />);
-    const btn = screen.getByRole('button', { name: /deposit/i });
-    if (btn) fireEvent.click(btn);
+  it('displays balance with formatting', async () => {
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ user_id: 'user123', balance: 1500.5 }) });
+    
+    render(<BalanceBar />);
+    await waitFor(() => {
+      expect(screen.getByTestId('balance-display')).toHaveTextContent(/1,500\.50/);
+    });
   });
 
-  it('updates when balance prop changes', async () => {
-    const { rerender } = render(<BalanceBar balance={100} />);
-    expect(screen.getByText(/100/i)).toBeInTheDocument();
-    rerender(<BalanceBar balance={250} />);
-    expect(screen.queryByText(/250/i)).toBeTruthy();
+  it('fetches balance for the given userId', async () => {
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ user_id: 'user456', balance: 200 }) });
+    
+    render(<BalanceBar userId="user456" />);
+    
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/wallet/balance?user_id=user456')
+    );
   });
 
-  it('formats numbers with commas for thousands', async () => {
-    render(<BalanceBar balance={15000} />);
-    expect(screen.getByText(/\b1\d{4}\b/)).toBeInTheDocument();
+  it('handles fetch errors gracefully', async () => {
+    mockFetch.mockRejectedValue(new Error('Network error'));
+    
+    render(<BalanceBar />);
+    // Should not crash, should keep default balance
+    expect(screen.getByText('VC')).toBeInTheDocument();
   });
 });

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
 
-export default function BalanceBar({ userId = 'user123' }) {
+export default function BalanceBar({ userId = 'user123' }: { userId?: string }) {
   const [balance, setBalance] = useState(1000);
 
   useEffect(() => {
