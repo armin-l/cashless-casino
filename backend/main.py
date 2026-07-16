@@ -1,9 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket
 import random
 from src.logger_utils import casino_logger
 from src.database import db
 from src.roulette_engine import RouletteEngine
 from src.blackjack_engine import BlackjackEngine
+from src.effects_engine import EffectEngine
+from src.sound_effects import SoundEffectQueue, SoundEventType
+from src.websocket_manager import ConnectionManager
 
 app = FastAPI(
     title="Cashless Casino API",
@@ -197,4 +200,58 @@ async def double_down_blackjack(
 
     return result
 
+
+
+
+effect_engine = EffectEngine()
+sound_queue_manager = SoundEffectQueue()
+connection_manager = ConnectionManager()
+
+
+@app.get('/animation/spin', tags=["Animations"])
+async def animation_spin(
+    game_type: str,
+    user_id: str,
+    reel_count: int = 3,
+    spin_duration_ms: int = 4000,):
+    if game_type not in ("slots", "roulette"):
+        raise HTTPException(status_code=400, detail=f"Invalid game type: {game_type}")
+
+    result = await effect_engine.create_spin_animation(
+        game_type=game_type,
+        user_id=user_id,
+        reel_count=reel_count,
+        spin_duration_ms=spin_duration_ms,
+    )
+    casino_logger.log_event("animation_created", {"game_type": game_type, "user_id": user_id})
+    return result
+
+
+@app.post('/sounds/queue', tags=["Sound Effects"])
+async def sounds_queue(
+    user_id: str,
+    sound_type: str = "spin_start",
+):
+    try:
+        event = SoundEventType(sound_type)
+    except ValueError:
+        raise HTTPException(status_code=400, detail=f"Invalid sound type: {sound_type}")
+
+    result = await sound_queue_manager.queue_effect(
+        user_id=user_id, game_type="slots", event_type=event
+    )
+    casino_logger.log_event("sound_queued", {"user_id": user_id, "event": sound_type})
+    return result
+
+
+@app.websocket("/ws/{user_id}")
+async def websocket_endpoint(websocket: WebSocket, user_id: str):
+    await connection_manager.connect(user_id, websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except Exception:
+        pass
+    finally:
+        await connection_manager.disconnect(user_id, websocket)
 

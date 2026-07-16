@@ -51,7 +51,7 @@ All games will follow a standardized "Bet -> Result -> Payout/Loss" state machin
 
 ### Phase 3: Complexity Scaling
 - [ ] Implement **Roulette** and **Card Games**.
-- [ ] Add advanced animations and sound effects.
+- [x] Add advanced animations and sound effects.
 - [ ] Enhance UI with "Casino Premium" themes (Neon, Gold, Dark Velvet).
 
 ### Phase 4: Polish & Social Features
