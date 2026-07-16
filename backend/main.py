@@ -7,7 +7,6 @@ from src.blackjack_engine import BlackjackEngine
 from src.effects_engine import EffectEngine
 from src.sound_effects import SoundEffectQueue, SoundEventType
 from src.websocket_manager import ConnectionManager
-from src.win_feed import GlobalWinFeed
 
 app = FastAPI(
     title="Cashless Casino API",
@@ -259,8 +258,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
 
 
 # Leaderboard endpoints
-from src.leaderboard_engine import engine as leaderboard_engine, PlayerStats
-import time
+from src.leaderboard_engine import engine as leaderboard_engine
 
 @app.get('/leaderboard/{leaderboard_type}', tags=["Leaderboards"])
 async def get_leaderboard(leaderboard_type: str, limit: int = 10):

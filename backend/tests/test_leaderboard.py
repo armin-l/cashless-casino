@@ -1,6 +1,6 @@
 import pytest
-from datetime import datetime, timezone, timedelta
-from unittest.mock import patch, AsyncMock
+from datetime import datetime, timezone
+from unittest.mock import patch
 from httpx import AsyncClient, ASGITransport
 import sys
 import os
@@ -186,7 +186,6 @@ class TestMultipleUserIsolation:
         assert lb_b[0]["user_id"] == "playerB"
 
 
-import asyncio
 from main import app
 
 

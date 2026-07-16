@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / .so files
+# Byte-compiled / optimized files
 *.pyc
 *.pyo
 *.pyd
@@ -8,14 +8,18 @@ __pycache__/
 
 # Virtual environments
 .env
-.venv
+.env.local
+.env.production.local
+.env.development.local
+.venv/
 env/
 venv/
 ENV/
 venv.bak/
 
-# Node (frontend) artifacts
+# Node / Next.js artifacts
 node_modules/
+.next/
 dist/
 build/
 
@@ -30,8 +34,7 @@ build/
 .DS_Store
 Thumbs.db
 
-# Python
+# Python distribution
 *.egg-info/
-dist/
 eggs/
 *.egg
