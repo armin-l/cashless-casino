@@ -50,11 +50,11 @@ All games will follow a standardized "Bet -> Result -> Payout/Loss" state machin
 - [x] Integration of basic betting logic into the user balance system.
 
 ### Phase 3: Complexity Scaling
-- [ ] Implement **Roulette** and **Card Games**.
+- [x] Implement **Roulette** and **Card Games**.
 - [x] Add advanced animations and sound effects.
-- [ ] Enhance UI with "Casino Premium" themes (Neon, Gold, Dark Velvet).
+- [x] Enhance UI with "Casino Premium" themes (Neon, Gold, Dark Velvet).
 
 ### Phase 4: Polish & Social Features
-- [ ] Global Win Feed (real-time notifications of other users winning).
-- [ ] Leaderboards based on total winnings and session length.
+- [x] Global Win Feed (real-time notifications of other users winning).
+- [x] Leaderboards based on total winnings and session length.
 - [ ] Final performance optimization and stress testing the RNG logic.
