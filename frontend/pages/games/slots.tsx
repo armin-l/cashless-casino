@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '../../src/components/Layout';
 import AnimatedBalance from '../../src/components/AnimatedBalance';
 import WinFloat from '../../src/components/WinFloat';
@@ -8,15 +8,15 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
 const SYMBOLS = ['🍒', '🍋', '🔔', '💎', '7️⃣'];
 const PAYOUTS: Record<string, number> = { '7️⃣': 25, '💎': 15, '🔔': 8, '🍒': 3, '🍋': 2 };
 
+type FloatState = { type: 'win' | 'loss'; amount: number; text: string } | null;
+
 export default function SlotsPage() {
-  const [balance, setBalance] = useState(1000);
   const [displayBalance, setDisplayBalance] = useState(1000);
   const [reels, setReels] = useState(SYMBOLS.slice(0, 3));
   const [spinning, setSpinning] = useState([false, false, false]);
   const [betAmount, setBetAmount] = useState(10);
   const [message, setMessage] = useState('Place your bet and spin!');
-  const [winFloatVisible, setWinFloatVisible] = useState(false);
-  const [winFloatAmount, setWinFloatAmount] = useState(0);
+  const [floatMessage, setFloatMessage] = useState<FloatState>(null);
   const [celebrationVisible, setCelebrationVisible] = useState(false);
   const [celebrationAmount, setCelebrationAmount] = useState(0);
   const [isJackpot, setIsJackpot] = useState(false);
@@ -36,7 +36,6 @@ export default function SlotsPage() {
 
   async function spin() {
     if (spinning.some(Boolean)) return;
-
     setSpinning([true, true, true]);
     
     try {
@@ -46,24 +45,20 @@ export default function SlotsPage() {
       );
       const data = await res.json();
 
-      // Animate reels stopping one by one
       setReels(data.reels);
       
       if (data.result === 'win') {
-        setWinFloatAmount(data.payout);
-        setWinFloatVisible(true);
+        setFloatMessage({ type: 'win', amount: data.payout, text: `You won ${data.payout.toFixed(2)} VC!` });
         setCelebrationAmount(data.payout);
         setCelebrationVisible(true);
-
-        const isJackpot = data.isJackpot ?? false;
-        setIsJackpot(isJackpot);
-        
-        setMessage(`You won ${data.payout.toFixed(2)} VC!`);
+        setIsJackpot(data.isJackpot ?? false);
       } else {
+        setFloatMessage({ type: 'loss', amount: betAmount, text: 'No luck this time.' });
         setMessage('No luck this time.');
       }
     } catch (_) {
-      setBalance((prev) => prev - betAmount);
+      setDisplayBalance((prev) => Math.max(0, prev - betAmount));
+      setFloatMessage({ type: 'loss', amount: betAmount, text: 'Error spinning the reels.' });
       setMessage('Error spinning the reels.');
     }
   }
@@ -136,12 +131,12 @@ export default function SlotsPage() {
           </p>
         </div>
 
-        {/* Win/Loss Float Notifications */}
-        {message && (
+        {/* Win/Loss Float - only renders when floatMessage is set */}
+        {floatMessage && (
           <WinFloat
-            message={message}
-            type={celebrationVisible ? 'win' : 'loss'}
-            amount={celebrationAmount}
+            message={floatMessage.text}
+            type={floatMessage.type}
+            amount={floatMessage.amount}
           />
         )}
 
