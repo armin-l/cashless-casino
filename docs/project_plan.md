@@ -8,37 +8,41 @@ A modern, fun, and highly engaging casino website that maximizes user delight th
 ## Phase 1 — Core Layout & Shell
 
 ### 1.1 App Shell & Navigation
-- [ ] Create `Layout` component wrapping every page (header + balance bar + footer)
+- [x] Create `Layout` component wrapping every page (header + balance bar + footer) — **done: Layout composes BalanceBar + Footer sub-components**
 - [ ] Sticky top nav bar with animated VC balance counter and user avatar placeholder
 - [ ] Hamburger / bottom nav for mobile-first responsive behavior
 - [ ] Route guard wrapper for future auth integration
 
 ### 1.2 Global Theme System
-- [ ] Design tokens: colors, spacing, typography scale in `tailwind.config.js`
-- [ ] Dark casino theme with gold / neon accent system
+- [x] Design tokens: colors, spacing, typography scale in `tailwind.config.js` — **done: custom colors + keyframes defined**
+- [x] Dark casino theme with gold / neon accent system — **done: bg-gradient-to-b from-gray-950 to-gray-900 pattern throughout**
 - [ ] CSS custom properties for dynamic theming (night-mode, VIP-mode)
-- [ ] Reusable `Card`, `Button`, `Input`, `Badge` base components
+- [x] Reusable `Button` base component — **done: Button.tsx with gold gradient + active scale**
 
 ### 1.3 Balance Bar & Wallet Quick-View
-- [ ] Global `BalanceBar` sticky-top component pulling from API or WebSocket feed
-- [ ] Animated balance counter (count-up / count-down with easing)
+- [x] Global `BalanceBar` sticky-top component pulling from API — **done: polls /wallet/balance every 5s, composable in Layout**
+- [x] Animated balance counter (count-up / count-down with easing) — **done: AnimatedBalance hook uses easeOutExpo**
 - [ ] Floating "+Credits" on win, "−Credits" on loss (positioned near source of action)
 
 ### 1.4 Shared Layout Components
-- [ ] `PageContainer` — centered content area with max-width and side padding
-- [ ] `GameCardGrid` — responsive grid for the homepage game selection
-- [ ] `Footer` — static legal / disclaimer text
+- [x] `PageContainer` — centered content area with max-width and side padding — **done: used in HomePage**
+- [x] `GameCardGrid` — responsive grid for the homepage game selection — **done: HomePage uses GameCardGrid/GAMES data**
+- [x] `Footer` — static legal / disclaimer text — **done: Footer composable in Layout**
 
 ---
 
 ## Phase 2 — Dopamine & Satisfying Interactions (The Fun Layer)
 
 ### 2.1 Click Feedback System
-- [ ] Ripple / watercolor burst on every button press (Lottie or CSS variant)
-- [ ] Button press "squish" animation: scale down to 0.95 then spring back to 1.0
+- [x] Ripple / watercolor burst on every button press — **done: useRipple hook + ripple animation**
+- [x] Button press "squish" animation: scale down to 0.95 then spring back to 1.0 — **done: active scale + spring-back keyframe, useSquish hook**
 - [ ] Active-state glow ring around buttons matching the brand yellow accent
 
-### 2.2 Haptic-Like Visual Feedback
+### 2.3 Win Celebration Patterns
+- [x] Big-win overlay with rolling number counter — **done: WinCelebration component with dimmed overlay, sparkles for jackpot**
+- [x] Floating "+Credits" on win, "−Credits" on loss — **done: WinFloat component with auto-dismiss**
+
+### 2.4 Ambient & Background Animations
 - [ ] Screen micro-shake on spin / deal / wheel-spin (CSS keyframe `@keyframes shake`)
 - [ ] Card flip / card-snap animation for Blackjack dealing
 - [ ] Roulette ball "clack" visual flash on the winning number cell

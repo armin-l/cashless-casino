@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Layout from '../src/components/Layout';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
 const SYMBOLS = ['🍒', '🍋', '🔔', '💎', '7️⃣'];
@@ -30,7 +31,7 @@ export default function SlotsPage() {
     try {
       const res = await fetch(
         `${API_BASE}/games/slots/spin?bet_amount=${betAmount}&user_id=user123`,
-        { method: 'POST' },
+        { method: 'POST },
       );
       const data = await res.json();
       setReels(data.reels);
@@ -45,7 +46,8 @@ export default function SlotsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
+    <Layout>
+      <main className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
       <div className="max-w-2xl mx-auto px-6 py-12">
         <header className="text-center mb-10">
           <h1 className="text-4xl font-extrabold tracking-tight mb-2 bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
@@ -112,5 +114,6 @@ export default function SlotsPage() {
         </p>
       </div>
     </main>
+    </Layout>
   );
 }
