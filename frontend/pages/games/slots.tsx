@@ -89,7 +89,7 @@ export default function SlotsPage() {
                 className={`w-[72px] h-[72px] sm:w-[96px] sm:h-[96px] flex items-center justify-center text-4xl sm:text-5xl font-bold rounded-xl transition-all duration-200 ${
                   spinning[i]
                     ? 'bg-gray-700/80 border-2 border-yellow-600/30 animate-pulse'
-                    : symbol === PAYOUTS[symbol] 
+                    : Object.keys(PAYOUTS).includes(symbol) && PAYOUTS[symbol as keyof typeof PAYOUTS] > 10
                       ? 'bg-yellow-500/10 border-2 border-yellow-400 shadow-lg shadow-yellow-500/10'
                       : 'bg-gray-900/80 border border-gray-700'
                 }`}

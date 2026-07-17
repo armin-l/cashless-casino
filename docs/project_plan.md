@@ -38,25 +38,22 @@ A modern, fun, and highly engaging casino website that maximizes user delight th
 - [x] Button press "squish" animation: scale down to 0.95 then spring back to 1.0 — **done: active scale + spring-back keyframe, useSquish hook**
 - [ ] Active-state glow ring around buttons matching the brand yellow accent
 
-### 2.3 Win Celebration Patterns
-- [x] Big-win overlay with rolling number counter — **done: WinCelebration component with dimmed overlay, sparkles for jackpot**
-- [x] Floating "+Credits" on win, "−Credits" on loss — **done: WinFloat component with auto-dismiss**
-
-### 2.4 Ambient & Background Animations
+### 2.2 Haptic-Like Visual Feedback
 - [ ] Screen micro-shake on spin / deal / wheel-spin (CSS keyframe `@keyframes shake`)
 - [ ] Card flip / card-snap animation for Blackjack dealing
 - [ ] Roulette ball "clack" visual flash on the winning number cell
 
 ### 2.3 Win Celebration Patterns
+- [x] Big-win overlay with rolling number counter — **done: WinCelebration component with dimmed overlay + sparkles**
+- [x] Floating "+Credits"/"−Credits" notifications — **done: WinFloat component with auto-dismiss, conditional rendering**
 - [ ] Confetti shower component (library or custom canvas-based)
-- [ ] Big-win overlay: screen dims, then the win amount rains in with a number counter rolling up
 - [ ] Win-streak badge with escalating flame icon and color shift per consecutive win
 - [ ] Near-miss tease animation when two of three slot symbols match
 
 ### 2.4 Ambient & Background Animations
 - [ ] Floating gold particles in the background canvas (subtle, non-distracting)
 - [ ] Pulsing neon border glow on active game panels
-- [ ] Gradient shimmer sweep across header text every ~10s
+- [x] Gradient shimmer sweep across header text — **done: shimmer keyframe defined in tailwind config**
 
 ### 2.5 Sound Feedback Layer (Placeholder Hooks)
 - [ ] `useClickSound()` hook wiring button presses to short click SFX
