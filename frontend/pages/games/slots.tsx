@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import Layout from '../src/components/Layout';
-import AnimatedBalance from '../src/components/AnimatedBalance';
-import WinFloat from '../src/components/WinFloat';
-import WinCelebration from '../src/components/WinCelebration';
+import Layout from '../../src/components/Layout';
+import AnimatedBalance from '../../src/components/AnimatedBalance';
+import WinFloat from '../../src/components/WinFloat';
+import WinCelebration from '../../src/components/WinCelebration';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
 const SYMBOLS = ['🍒', '🍋', '🔔', '💎', '7️⃣'];
@@ -137,19 +137,23 @@ export default function SlotsPage() {
         </div>
 
         {/* Win/Loss Float Notifications */}
-        <WinFloat
-          message={message}
-          type={celebrationVisible ? 'win' : 'loss'}
-          amount={winFloatAmount}
-        />
+        {message && (
+          <WinFloat
+            message={message}
+            type={celebrationVisible ? 'win' : 'loss'}
+            amount={celebrationAmount}
+          />
+        )}
 
         {/* Big Win Celebration Overlay */}
-        <WinCelebration
-          amount={celebrationAmount}
-          isJackpot={isJackpot}
-          visible={celebrationVisible}
-          onClose={() => setCelebrationVisible(false)}
-        />
+        {celebrationVisible && (
+          <WinCelebration
+            amount={celebrationAmount}
+            isJackpot={isJackpot}
+            visible={celebrationVisible}
+            onClose={() => setCelebrationVisible(false)}
+          />
+        )}
       </div>
     </Layout>
   );
