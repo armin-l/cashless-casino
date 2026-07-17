@@ -8,26 +8,26 @@ A modern, fun, and highly engaging casino website that maximizes user delight th
 ## Phase 1 — Core Layout & Shell
 
 ### 1.1 App Shell & Navigation
-- [ ] Create `Layout` component wrapping every page (header + balance bar + footer)
-- [ ] Sticky top nav bar with animated VC balance counter and user avatar placeholder
+- [x] Create `Layout` component wrapping every page (header + balance bar + footer)
+- [x] Sticky top nav bar with animated VC balance counter and user avatar placeholder
 - [ ] Hamburger / bottom nav for mobile-first responsive behavior
 - [ ] Route guard wrapper for future auth integration
 
 ### 1.2 Global Theme System
-- [ ] Design tokens: colors, spacing, typography scale in `tailwind.config.js`
-- [ ] Dark casino theme with gold / neon accent system
+- [x] Design tokens: colors, spacing, typography scale in `tailwind.config.js`
+- [x] Dark casino theme with gold / neon accent system
 - [ ] CSS custom properties for dynamic theming (night-mode, VIP-mode)
-- [ ] Reusable `Card`, `Button`, `Input`, `Badge` base components
+- [x] Reusable `Card`, `Button`, `Input`, `Badge` base components
 
 ### 1.3 Balance Bar & Wallet Quick-View
-- [ ] Global `BalanceBar` sticky-top component pulling from API or WebSocket feed
-- [ ] Animated balance counter (count-up / count-down with easing)
+- [x] Global `BalanceBar` sticky-top component pulling from API or WebSocket feed
+- [x] Animated balance counter (count-up / count-down with easing)
 - [ ] Floating "+Credits" on win, "−Credits" on loss (positioned near source of action)
 
 ### 1.4 Shared Layout Components
-- [ ] `PageContainer` — centered content area with max-width and side padding
-- [ ] `GameCardGrid` — responsive grid for the homepage game selection
-- [ ] `Footer` — static legal / disclaimer text
+- [x] `PageContainer` — centered content area with max-width and side padding
+- [x] `GameCardGrid` — responsive grid for the homepage game selection
+- [x] `Footer` — static legal / disclaimer text
 
 ---
 
