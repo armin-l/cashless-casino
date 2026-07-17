@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../../src/components/Layout';
 import AnimatedBalance from '../../src/components/AnimatedBalance';
 import WinFloat from '../../src/components/WinFloat';
