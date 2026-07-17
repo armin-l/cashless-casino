@@ -16,4 +16,4 @@ def test_log_transaction_format(caplog):
     with caplog.at_level(logging.INFO, logger="CasinoApp"):
         logger.log_transaction(user_id="user123", amount=50.0, transaction_type="win")
     
-    assert "TRANSACTION | user123 | win | 50.0" in caplog.text
+    assert "TRANSACTION | User: user123 | Type: win | Amount: 50.0" in caplog.text

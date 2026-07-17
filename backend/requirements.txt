@@ -4,5 +4,5 @@ pytest
 httpx
 sqlalchemy
 ruff
-passlib
-bcrypt
+websockets
+pydantic
