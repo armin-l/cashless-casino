@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { formatCurrency } from '../lib/format';
 
 interface FloatNotificationProps {
   message: string;
@@ -31,13 +32,13 @@ export default function WinFloat({ message, type, amount }: FloatNotificationPro
         {type === 'win' ? (
           <>
             <span className="text-green-400 text-xl">🎉</span>
-            <span className="font-mono font-bold text-lg">+{amount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+            <span className="font-mono font-bold text-lg">+{formatCurrency(amount)}</span>
             <span className="text-gray-400">{message}</span>
           </>
         ) : (
           <>
             <span className="text-red-400 text-xl">💨</span>
-            <span className="font-mono font-bold text-lg">-{amount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+            <span className="font-mono font-bold text-lg">-{formatCurrency(amount)}</span>
             <span className="text-gray-400">{message}</span>
           </>
         )}

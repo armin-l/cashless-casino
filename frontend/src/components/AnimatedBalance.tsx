@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { formatCurrency } from '../lib/format';
 
 interface AnimatedBalanceProps {
   targetBalance: number;
@@ -39,7 +40,7 @@ export default function AnimatedBalance({ targetBalance, duration = 800, classNa
 
   return (
     <span className={className ?? 'font-mono tabular-nums'}>
-      {displayed.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+      {formatCurrency(displayed)}
     </span>
   );
 }
