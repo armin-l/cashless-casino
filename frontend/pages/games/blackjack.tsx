@@ -46,6 +46,8 @@ export default function BlackjackPage() {
   const [dealerHand, setDealerHand] = useState<any[]>([]);
   const [gameState, setGameState] = useState<GameState>('betting');
   const [result, setResult] = useState<string | null>(null);
+  const [isDealing, setIsDealing] = useState(false);
+  const [dealerRevealed, setDealerRevealed] = useState(false);
 
   function deal() {
     if (balance < betAmount) return;
@@ -56,8 +58,16 @@ export default function BlackjackPage() {
     
     setPlayerHand(pHand);
     setDealerHand(dHand);
-    setGameState('player-turn');
+    setIsDealing(true);
+    setGameState('dealing');
     setResult(null);
+
+    // Reveal dealer's second card after deal animation
+    setTimeout(() => {
+      setIsDealing(false);
+      setGameState('player-turn');
+      setBalance(prev => prev - betAmount);
+    }, 800);
   }
 
   function hit() {
@@ -79,33 +89,48 @@ export default function BlackjackPage() {
     if (gameState !== 'player-turn') return;
     setGameState('dealer-turn');
     
-    setTimeout(() => dealerPlay(), 1000);
+    // Flip dealer's hidden card with animation delay
+    setTimeout(() => setDealerRevealed(true), 600);
+    
+    setTimeout(() => dealerPlay(), 1200);
   }
 
   function dealerPlay() {
     let dHand = [...dealerHand];
     
     while (handTotal(dHand) < 17) {
-      dHand.push(randomCard());
+      setTimeout(() => {
+        dHand.push(randomCard());
+        setDealerHand([...dHand]);
+      }, 400);
     }
     
-    setDealerHand(dHand);
+    // Final dealer hand update after all delays
+    setTimeout(() => {
+      const pTotal = handTotal(playerHand);
+      const dTotal = handTotal(dHand);
+      
+      if (dTotal > 21 || pTotal > dTotal) {
+        setResult('YOU WIN!');
+        setBalance(prev => prev + betAmount * 2);
+      } else if (pTotal === dTotal) {
+        setResult('PUSH');
+        setBalance(prev => prev + betAmount);
+      } else {
+        setResult('DEALER WINS');
+      }
+      
+      setGameState('result');
+    }, handTotal(dHand) < 17 ? 1600 : 200);
     
-    const pTotal = handTotal(playerHand);
-    const dTotal = handTotal(dHand);
-    
-    if (dTotal > 21 || pTotal > dTotal) {
-      setResult('YOU WIN!');
-      setBalance(prev => prev + betAmount * 2);
-    } else if (pTotal === dTotal) {
-      setResult('PUSH');
-      setBalance(prev => prev + betAmount);
-    } else {
-      setResult('DEALER WINS');
+    // Immediate update for hands already complete
+    if (handTotal(dHand) >= 17) {
+      setDealerHand(dHand);
     }
-    
-    setGameState('result');
   }
+
+  const pTotal = handTotal(playerHand);
+  const dTotal = dealerRevealed ? handTotal(dealerHand) : null;
 
   return (
     <Layout>
