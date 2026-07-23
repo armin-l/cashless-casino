@@ -1,7 +1,17 @@
-module.exports = {
-  rootDir: '.',
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  testPathIgnorePatterns: ['/node_modules/', '/.next/'],
-};
+import { defineConfig } from 'vitest/config';
+import path from 'path';
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: [path.resolve(__dirname, 'tests/setup.js')],
+    moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+    testPathIgnorePatterns: ['/node_modules/', '/.next/'],
+  },
+});

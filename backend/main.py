@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 import random
 from src.logger_utils import casino_logger
 from src.database import db
@@ -12,6 +13,14 @@ app = FastAPI(
     title="Cashless Casino API",
     description="API for managing users, wallets, and games in a cashless casino environment.",
     version="0.1.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 SYMBOLS = ["🍒", "🍋", "🔔", "💎", "7️⃣"]
